@@ -34,6 +34,14 @@ import logging
 import socket
 import struct
 
+from thriftpy2._compat import PY3, PY35
+if PY3:
+    import urllib
+else:
+    import urllib2 as urllib
+    import urlparse
+    urllib.parse = urlparse
+
 try:
     from tornado.locks import Lock
 except ImportError:
@@ -243,10 +251,15 @@ def make_server(
 
 @gen.coroutine
 def make_client(
-        service, host, port, proto_factory=TBinaryProtocolFactory(),
+        service, host='', port='', proto_factory=TBinaryProtocolFactory(),
         io_loop=None, ssl_options=None,
         connect_timeout=TTornadoStreamTransport.DEFAULT_CONNECT_TIMEOUT,
-        read_timeout=TTornadoStreamTransport.DEFAULT_READ_TIMEOUT):
+        read_timeout=TTornadoStreamTransport.DEFAULT_READ_TIMEOUT,
+        url=None):
+    if url is not None:
+        parsed = urllib.parse.urlparse(url)
+        host = parsed.hostname or host
+        port = parsed.port or port
     transport = TTornadoStreamTransport(
         host, port, io_loop=io_loop,
         ssl_options=ssl_options, read_timeout=read_timeout)

@@ -137,7 +137,7 @@ def client(timeout=3000):
 
 def ssl_client(timeout=3000):
     return client_context(addressbook.AddressBookService,
-                          host='localhost', port=SSL_PORT,
+                          url='http://localhost:'+str(SSL_PORT),
                           timeout=timeout,
                           cafile="ssl/CA.pem", certfile="ssl/client.crt",
                           keyfile="ssl/client.key")

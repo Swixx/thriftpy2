@@ -51,7 +51,6 @@ else:
     urllib.parse = urlparse
     urllib.parse.quote = urllib.quote
 
-
 from thriftpy2.thrift import TProcessor, TClient
 from thriftpy2.server import TServer
 from thriftpy2.transport import (
@@ -280,11 +279,18 @@ class THttpClient(object):
         flush = __with_timeout(flush)
 
 
-def make_client(service, host, port, path='', scheme='http',
+def make_client(service, host='', port='', path='', scheme='http',
                 proto_factory=TBinaryProtocolFactory(),
                 trans_factory=TBufferedTransportFactory(),
                 ssl_context_factory=None,
-                timeout=DEFAULT_HTTP_CLIENT_TIMEOUT_MS):
+                timeout=DEFAULT_HTTP_CLIENT_TIMEOUT_MS,
+                url=None):
+    if url is not None:
+        parsed = urllib.parse.urlparse(url)
+        host = parsed.hostname or host
+        port = parsed.port or port
+        path = parsed.path or path
+        scheme = parsed.scheme or scheme
     uri = HTTP_URI.format(scheme=scheme, host=host, port=port, path=path)
     http_socket = THttpClient(uri, timeout, ssl_context_factory)
     transport = trans_factory.get_transport(http_socket)
@@ -294,11 +300,18 @@ def make_client(service, host, port, path='', scheme='http',
 
 
 @contextmanager
-def client_context(service, host, port, path='', scheme='http',
+def client_context(service, host='', port='', path='', scheme='http',
                    proto_factory=TBinaryProtocolFactory(),
                    trans_factory=TBufferedTransportFactory(),
                    ssl_context_factory=None,
-                   timeout=DEFAULT_HTTP_CLIENT_TIMEOUT_MS):
+                   timeout=DEFAULT_HTTP_CLIENT_TIMEOUT_MS,
+                   url=None):
+    if url is not None:
+        parsed = urllib.parse.urlparse(url)
+        host = parsed.hostname or host
+        port = parsed.port or port
+        path = parsed.path or path
+        scheme = parsed.scheme or scheme
     uri = HTTP_URI.format(scheme=scheme, host=host, port=port, path=path)
     http_socket = THttpClient(uri, timeout, ssl_context_factory)
     transport = trans_factory.get_transport(http_socket)

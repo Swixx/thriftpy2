@@ -75,7 +75,8 @@ class TornadoRPCTestCase(testing.AsyncTestCase):
 
     def mk_client(self):
         return make_client(addressbook.AddressBookService,
-                           '127.0.0.1', self.port, io_loop=self.io_loop)
+                           url='http://127.0.0.1:'+str(self.port),
+                           io_loop=self.io_loop)
 
     def setUp(self):
         super(TornadoRPCTestCase, self).setUp()

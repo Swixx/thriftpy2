@@ -102,7 +102,7 @@ def person():
 
 def client(timeout=3000):
     return client_context(addressbook.AddressBookService,
-                          host="127.0.0.1", port=6080, timeout=timeout)
+                          url="127.0.0.1:"+str(6080), timeout=timeout)
 
 
 def test_void_api(server):

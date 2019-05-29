@@ -59,7 +59,7 @@ class BufferedTransportTestCase(TestCase):
 
     def client(self):
         return client_context(addressbook.AddressBookService,
-                              host="localhost", port=self.PORT,
+                              url="http://localhost:"+str(self.PORT),
                               proto_factory=self.PROTOCOL_FACTORY,
                               trans_factory=self.TRANSPORT_FACTORY)
 
